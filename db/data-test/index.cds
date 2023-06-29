@@ -1,0 +1,1 @@
+namespace Myapp.db;
