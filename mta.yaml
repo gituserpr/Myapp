@@ -1,6 +1,6 @@
 _schema-version: '3.2'
 ID: Myapp
-version: '2.00'
+version: 0.0.1
 parameters:
   enable-parallel-deployments: true
 build-parameters:
