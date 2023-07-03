@@ -1,28 +1,23 @@
 _schema-version: '3.2'
 ID: Myapp
-version: 0.0.1
-
+version: '2.00'
 parameters:
   enable-parallel-deployments: true
-
 build-parameters:
   before-all:
     - builder: custom
       commands:
         - npm install --production
         - npx -p @sap/cds-dk cds build --production
-
 modules:
-  # ---------------- DATABASE DEPLOYER MODULE ------------------
   - name: Myapp-db-deployer
-  # ------------------------------------------------------------
     type: hdb
     path: gen/db
     build-parameters:
       ignore:
-        - default-*.json
+        - 'default-*.json'
         - .env
-        - "*node_modules*"
+        - '*node_modules*'
         - package-lock.json
     parameters:
       buildpack: nodejs_buildpack
@@ -31,18 +26,14 @@ modules:
     requires:
       - name: Myapp-uaa
       - name: Myapp-db
-
-
-  # --------------------- SERVER MODULE ------------------------
   - name: Myapp-srv
-  # ------------------------------------------------------------
     type: nodejs
     path: gen/srv
     build-parameters:
       ignore:
-        - default-*.json
+        - 'default-*.json'
         - .env
-        - "*node_modules*"
+        - '*node_modules*'
         - package-lock.json
     parameters:
       buildpack: nodejs_buildpack
@@ -55,21 +46,15 @@ modules:
     provides:
       - name: srv-api
         properties:
-          srv-url: ${default-url}
-
-
-
-
-  # ------------------ APP ROUTER MODULE -----------------------
+          srv-url: '${default-url}'
   - name: Myapp-app
-  # ------------------------------------------------------------
     type: approuter.nodejs
     path: app
     build-parameters:
       ignore:
-        - default-*.json
+        - 'default-*.json'
         - .env
-        - "*node_modules*"
+        - '*node_modules*'
         - package-lock.json
     parameters:
       memory: 256M
@@ -80,24 +65,17 @@ modules:
         group: destinations
         properties:
           name: srv
-          url: ~{srv-url}
+          url: '~{srv-url}'
           timeout: 600000
           forwardAuthToken: true
-
-
 resources:
-  # ----------------------- UAA SERVICE ------------------------
   - name: Myapp-uaa
-  # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: xsuaa
       service-plan: application
       path: ./xs-security.json
-
-  # -------------------- DESTINATION SERVICE -------------------
   - name: Myapp-dest
-  # ------------------------------------------------------------
     type: org.cloudfoundry.managed-service
     parameters:
       service: destination
@@ -109,28 +87,17 @@ resources:
             destinations:
               - Name: Myapp-API_SALES_ORDER_SRV
                 Description: SAP S/4HANA Cloud Sales Order (A2X)
-                URL: https://sandbox.api.sap.com
+                URL: 'https://sandbox.api.sap.com'
                 Type: HTTP
                 ProxyType: Internet
                 Authentication: NoAuthentication
-                URL.headers.APIKey: <SetValueInCockpit>
-                URL.headers.Application-Interface-Key: <SetValueInCockpit>
+                URL.headers.APIKey: '<SetValueInCockpit>'
+                URL.headers.Application-Interface-Key: '<SetValueInCockpit>'
                 HTML5.DynamicDestination: true
-
-
-
-  # ------------------- HDI CONTAINER SERVICE ------------------
   - name: Myapp-db
-  # ------------------------------------------------------------
     type: com.sap.xs.hdi-container
     parameters:
       service: hana
       service-plan: hdi-shared
     properties:
-      hdi-service-name: ${service-name}
-
-
-
-
-
-
+      hdi-service-name: '${service-name}'
