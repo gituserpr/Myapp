@@ -102,3 +102,4 @@ resources:
     properties:
       hdi-service-name: '${service-name}'
 copyright: Amir Suleiman
+provider: TEST
